@@ -9,7 +9,7 @@ const isStar = true;
 /**
  * Телефонная книга
  */
-let phoneBook;
+let phoneBook = [];
 
 /**
  * Добавление записи в телефонную книгу
@@ -19,7 +19,18 @@ let phoneBook;
  * @returns {Boolean}
  */
 function add(phone, name, email) {
+    if ((phone.length !== 10) || (!name)) {
+        return false;
+    }
 
+    for (let i = 0; i < phoneBook.length; i++) {
+        if (phone === phoneBook[i][0]) {
+            return false;
+        }
+    }
+    phoneBook.push([phone, name, email]);
+
+    return true;
 }
 
 /**
@@ -30,7 +41,15 @@ function add(phone, name, email) {
  * @returns {Boolean}
  */
 function update(phone, name, email) {
+    for (let i = 0; i < phoneBook.length; i++) {
+        if (phone === phoneBook[i][0] && name) {
+            phoneBook[i] = ([phone, name, email]);
 
+            return true;
+        }
+    }
+
+    return false;
 }
 
 /**
@@ -48,7 +67,29 @@ function findAndRemove(query) {
  * @returns {String[]}
  */
 function find(query) {
+    let answer = [];
+    for (let i = 0; i < phoneBook.length; i++) {
+        if (phoneBook[i][0].includes(query) ||
+            phoneBook[i][1].includes(query) ||
+            phoneBook[i][2].includes(query)
+        ) {
+            const entry = phoneBook[i];
+            const number = chopNumber(entry[0]);
+            answer.push(`${entry[1]}, ${number}, ${entry[2]}`);
+        }
+    }
 
+    return answer;
+}
+
+function chopNumber(number) {
+
+    const numberCode = `(${number[0]}${number[1]}${number[2]})`;
+    const numberScnd = `(${number[3]}${number[4]}${number[5]})`;
+    const numberThrd = `(${number[6]}${number[7]})`;
+    const numberFrth = `(${number[8]}${number[9]})`;
+
+    return `+7 (${numberCode}) ${numberScnd}-${numberThrd}-${numberFrth}`;
 }
 
 /**
